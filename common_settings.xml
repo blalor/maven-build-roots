@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<settings xmlns="http://maven.apache.org/POM/4.0.0"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+    <!-- BUILD_ROOT_REPOSITORY must be set by invoking script -->
+    <localRepository>${env.BUILD_ROOT_REPOSITORY}</localRepository>
+
+    <mirrors>
+        <!-- 
+             see
+             http://maven.apache.org/guides/mini/guide-mirror-settings.html
+        -->
+
+        <!--
+            http://maven.apache.org/guides/development/guide-plugin-snapshot-repositories.html
+        -->
+
+        <!-- the (plugin)repository IDs are inconsistent; these mirrorOf IDs all refer to the same one -->
+        <!-- <mirror>
+            <id>nexus-apacheSnaps</id>
+            <name>Nexus Mirror</name>
+            <url>http://localhost:8081/nexus/content/repositories/apache-snapshots</url>
+
+            <mirrorOf>apache.snapshots,apache.m2.incubator,people.apache.org</mirrorOf>
+        </mirror> -->
+
+        <!-- <mirror>
+            <id>nexus-codehausSnaps</id>
+            <name>Nexus Mirror</name>
+            <url>http://localhost:8081/nexus/content/repositories/codehaus-snapshots</url>
+            <mirrorOf>codehaus.org</mirrorOf>
+        </mirror>
+
+        <mirror>
+            <id>nexus-glassfish</id>
+            <url>http://localhost:8081/nexus/content/repositories/glassfish</url>
+            <mirrorOf>m.g.o-public</mirrorOf>
+        </mirror>
+        <mirror>
+            <id>nexus-java.net1</id>
+            <url>http://localhost:8081/nexus/content/repositories/java.net1</url>
+            <mirrorOf>maven-repository.dev.java.net,java.net</mirrorOf>
+        </mirror>
+        <mirror>
+            <id>nexus-java.net2</id>
+            <url>http://localhost:8081/nexus/content/repositories/java.net</url>
+            <mirrorOf>java.net2,java.net2-backup,maven2-repository.dev.java.net</mirrorOf>
+        </mirror>
+
+        <mirror>
+            <id>nexus-public</id>
+            <url>http://localhost:8081/nexus/content/groups/public</url>
+            <mirrorOf>jibx.sf.net</mirrorOf>
+        </mirror> -->
+    </mirrors>
+
+    <profiles>
+        <profile>
+            <!--
+                Maven public virtual repository doesn't provide access to the
+                apache or codehaus snapshot repositories.  If you need a
+                snapshot version of something, enable this profile.  See
+                #nexus-apacheSnaps mirror above.
+            -->
+            <id>public-snapshots</id>
+
+            <repositories>
+                <repository>
+                    <id>public-snapshots</id>
+                    <name>Public Snapshots</name>
+                    <url>http://localhost:8081/nexus/content/groups/public-snapshots</url>
+                    <releases>
+                        <enabled>false</enabled>
+                    </releases>
+                    <snapshots>
+                        <enabled>true</enabled>
+                    </snapshots>
+                </repository>
+            </repositories>
+
+            <pluginRepositories>
+                <pluginRepository>
+                    <id>public-snapshots</id>
+                    <name>Public Snapshots</name>
+                    <url>http://localhost:8081/nexus/content/groups/public-snapshots</url>
+                    <releases>
+                        <enabled>false</enabled>
+                    </releases>
+                    <snapshots>
+                        <enabled>true</enabled>
+                    </snapshots>
+                </pluginRepository>
+            </pluginRepositories>
+        </profile>
+
+        <profile>
+            <!--
+                This profile, which is active by default, overrides the
+                definition of the central repository, directing it to the
+                Nexus repository and enabling snapshot retrieval.  The Nexus
+                public virtual repository provides access to internally-developed snapshots,
+                but not to other snapshots.
+            -->
+            <id>central-override</id>
+
+            <repositories>
+                <repository>
+                    <id>central</id>
+                    <name>Maven Repository Switchboard (Nexus)</name>
+                    <url>http://localhost:8081/nexus/content/groups/public</url>
+                    <snapshots>
+                        <enabled>true</enabled>
+                    </snapshots>
+                </repository>
+            </repositories>
+
+            <pluginRepositories>
+                <pluginRepository>
+                    <id>central</id>
+                    <name>Maven Plugin Repository (Nexus)</name>
+                    <url>http://localhost:8081/nexus/content/groups/public</url>
+                    <snapshots>
+                        <enabled>true</enabled>
+                    </snapshots>
+                </pluginRepository>
+            </pluginRepositories>
+        </profile>
+    </profiles>
+
+    <!-- List of profiles that are active for all builds. -->
+     <activeProfiles>
+         <!-- <activeProfile>central-override</activeProfile> -->
+     </activeProfiles>
+</settings>

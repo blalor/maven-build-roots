@@ -40,6 +40,7 @@ fi
 ## prepare JAVA_HOME and M2_HOME for export
 JAVA_HOME="$DEFAULT_JAVA_HOME"
 M2_HOME="$DEFAULT_M2_HOME"
+MAX_HEAP="${DEFAULT_MAX_HEAP}"
 
 ## source in the per-buildroot config, which can override JAVA_HOME and
 ## M2_HOME
@@ -58,6 +59,10 @@ if [ "${M2_HOME}" != "${DEFAULT_M2_HOME}" ]; then
     echo "WARNING: M2_HOME overridden; now ${M2_HOME}"
 fi
 
+if [ "${MAX_HEAP}" != "${DEFAULT_MAX_HEAP}" ]; then
+    echo "WARNING: MAX_HEAP overridden; now ${MAX_HEAP}"
+fi
+
 ## finalize environment
 export JAVA_HOME M2_HOME
 
@@ -68,7 +73,7 @@ export BUILD_ROOT_REPOSITORY="${BUILD_ROOT}/repository"
 ## still allowing the user to have their own settings.xml
 # -Dorg.apache.maven.global-settings is deprecated as of 2.1.0; replace w/ "-gs"
 # http://maven.40175.n5.nabble.com/settings-xml-precedence-td118292.html
-export MAVEN_OPTS="${MAVEN_OPTS} -Xmx1024m -XX:MaxPermSize=256m -Dfile.encoding=UTF-8 -Dorg.apache.maven.global-settings=${_basedir}/common_settings.xml"
+export MAVEN_OPTS="${MAVEN_OPTS} -Xmx${MAX_HEAP} -XX:MaxPermSize=256m -Dfile.encoding=UTF-8 -Dorg.apache.maven.global-settings=${_basedir}/common_settings.xml"
 export PATH="${M2_HOME}/bin:${JAVA_HOME}/bin:${PATH}"
 
 ## fire off maven

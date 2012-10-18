@@ -63,6 +63,16 @@ if [ "${MAX_HEAP}" != "${DEFAULT_MAX_HEAP}" ]; then
     echo "WARNING: MAX_HEAP overridden; now ${MAX_HEAP}"
 fi
 
+settings_override=""
+
+## user BUILD_ROOT/settings.xml if it exists
+if [ -e "${BUILD_ROOT}/settings.xml" ]; then
+    echo "INFO: using local settings.xml"
+
+    settings_override="-s ${BUILD_ROOT}/settings.xml"
+fi
+
+
 ## finalize environment
 export JAVA_HOME M2_HOME
 
@@ -85,4 +95,4 @@ export MAVEN_OPTS
 export PATH="${M2_HOME}/bin:${JAVA_HOME}/bin:${PATH}"
 
 ## fire off maven
-exec mvn -gs "${_basedir}/common_settings.xml" "$@"
+exec mvn -gs "${_basedir}/common_settings.xml" ${settings_override} "$@"
